@@ -2,6 +2,8 @@
 
 FromSoftware 游戏的游戏数据解包器与松散加载修补器；[UXM](https://github.com/JKAnderson/UXM) 的精神续作。完整使用说明与更新日志请见每次发行附带的 [Readme](./dist/Readme.txt)。
 
+> 本分支提供简体中文本地化（默认中文，可随时切换英文），由 [Hoshino486](https://github.com/Hoshino486/Nuxe) 维护。
+
 界面默认简体中文，可在主界面右上角“语言”下拉框中随时切换到 English，选择结果会被记住（写入程序目录下的 `Nuxe.language`，设置存储可用时也会写入用户配置）；也可用环境变量 `NUXE_LANG=zh` 或 `NUXE_LANG=en` 强制指定启动语言。
 
 Nuxe 支持所有使用大型 BinderLight 归档的 FromSoftware 游戏：
