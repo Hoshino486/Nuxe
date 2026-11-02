@@ -1,4 +1,4 @@
-﻿<Window x:Class="Nuxe.Views.ErrorWindow"
+<Window x:Class="Nuxe.Views.ErrorWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -13,7 +13,7 @@
         <TextBox Name="TextBoxDetails" IsReadOnly="True" MinHeight="100" Height="Auto" MaxHeight="400" TextWrapping="Wrap" VerticalScrollBarVisibility="Auto" 
                  Text="{Binding Details, Mode=OneWay}" d:Text="Error details go here!"
                  Visibility="{Binding DetailsVisibility, Mode=OneWay}"/>
-        <Button Margin="10 10 10 0" Click="Button_Click">OK</Button>
+        <Button Margin="10 10 10 0" Click="Button_Click" Content="{DynamicResource Button_OK}"/>
     </StackPanel>
     
 </Window>

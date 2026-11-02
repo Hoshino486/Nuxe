@@ -1,4 +1,4 @@
-﻿using Coremats;
+using Coremats;
 using System.IO;
 using System.Text.Json;
 using System.Text.Json.Serialization;
@@ -53,7 +53,7 @@ internal class GameConfig
     public static GameConfig[] LoadGameConfigs(string resDir)
     {
         string configsDir = Path.Combine(resDir, "GameConfigs");
-        Common.AssertDirExists(configsDir, "Game configs directory not found; please ensure that you've fully extracted the program files.");
+        Common.AssertDirExists(configsDir, Loc.Get("Err_GameConfigsDirNotFound"));
         var configs = Directory.GetFiles(configsDir, "*.jsonc").Select(path =>
         {
             string json = File.ReadAllText(path);
@@ -68,6 +68,6 @@ internal class GameConfig
             if (config.ExpectedFiles.All(file => File.Exists(Path.Combine(gameDir, file))))
                 return config;
 
-        throw new FriendlyException("Failed to detect game type; please ensure that you've selected a valid game directory.");
+        throw new FriendlyException(Loc.Get("Err_DetectGameFailed"));
     }
 }

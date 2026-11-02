@@ -1,4 +1,4 @@
-﻿using Coremats;
+using Coremats;
 using Nuxe.ViewModels;
 using Nuxe.Views;
 using System.IO;
@@ -15,20 +15,20 @@ internal static class Common
         if (ex is FriendlyException)
             vm = new(ex.Message, ex.InnerException?.ToString());
         else
-            vm = new("An unexpected error occurred.", ex.ToString());
+            vm = new(Loc.Get("Err_Unexpected"), ex.ToString());
         new ErrorWindow() { DataContext = vm }.ShowDialog();
     }
 
     public static void AssertDirExists(string dir, string message)
     {
         if (!Directory.Exists(dir))
-            throw new FriendlyException($"{message}\nPath: \"{dir}\"");
+            throw new FriendlyException($"{message}{Loc.Format("Err_PathSuffix", dir)}");
     }
 
     public static void AssertFileExists(string path, string message)
     {
         if (!File.Exists(path))
-            throw new FriendlyException($"{message}\nPath: \"{path}\"");
+            throw new FriendlyException($"{message}{Loc.Format("Err_PathSuffix", path)}");
     }
 
     public static byte[] DecryptBinderHeader(string bhdPath, BinderKeysReader binderKeys, bool expectPems, byte[] bytes)
@@ -39,7 +39,7 @@ internal static class Common
             string dir = Path.GetDirectoryName(bhdPath);
             string keyFile = Path.GetFileName(bhdPath).Replace("Ebl.bhd", "KeyCode.pem");
             string keyPath = Path.Combine(dir, keyFile);
-            AssertFileExists(keyPath, "Encryption key not found; please verify integrity for Steam games.");
+            AssertFileExists(keyPath, Loc.Get("Err_EncryptionKeyNotFoundSteam"));
             key = File.ReadAllText(keyPath);
         }
         else

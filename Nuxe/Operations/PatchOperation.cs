@@ -1,4 +1,4 @@
-﻿using System.IO;
+using System.IO;
 using System.Text;
 
 namespace Nuxe;
@@ -12,9 +12,9 @@ internal class PatchOperation : Operation
     public PatchOperation(string exePath, GameConfig gameConfig, string outputPath)
     {
         if (gameConfig.PatchAliases == null)
-            throw new FriendlyException("Executable patching is not supported for this game.");
+            throw new FriendlyException(Loc.Get("Err_PatchUnsupported"));
 
-        Common.AssertFileExists(exePath, "Executable file not found; please select a valid file.");
+        Common.AssertFileExists(exePath, Loc.Get("Err_ExeNotFound"));
         ExePath = Path.GetFullPath(exePath);
         GameConfig = gameConfig;
         OutputPath = outputPath == null ? ExePath : Path.GetFullPath(outputPath);
@@ -23,9 +23,9 @@ internal class PatchOperation : Operation
     protected override void Run()
     {
         byte[] bytes = File.ReadAllBytes(ExePath);
-        int aliasesPatched = Patch("(Step 1/1) Patching aliases", bytes);
+        int aliasesPatched = Patch(Loc.Get("Step_Patch1"), bytes);
         if (aliasesPatched == 0)
-            throw new FriendlyException("No aliases found to patch; the file may already be patched, or you may have selected the wrong file.");
+            throw new FriendlyException(Loc.Get("Err_NoAliases"));
 
         if (OutputPath == ExePath)
         {
@@ -46,7 +46,7 @@ internal class PatchOperation : Operation
             CancellationToken.ThrowIfCancellationRequested();
             string alias = aliases[i];
             double progress = (double)i / aliases.Length;
-            Progress.Report(new(progress, $"{step} - (Alias {i}/{aliases.Length}) {alias}"));
+            Progress.Report(new(progress, Loc.Format("Progress_Alias", step, i, aliases.Length, alias)));
 
             string replace = $"{alias}:/";
             string with = $".{new('/', alias.Length + 1)}";

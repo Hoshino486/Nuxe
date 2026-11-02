@@ -1,4 +1,4 @@
-﻿using Coremats;
+using Coremats;
 using System.IO;
 
 namespace Nuxe;
@@ -18,7 +18,7 @@ internal class BinderKeysReader
         BinderKeysGame = binderKeysGame;
         BinderKeysGameDir = Path.Combine(BinderKeysDir, BinderKeysGame);
 
-        Common.AssertDirExists(BinderKeysGameDir, "BinderKeys game directory not found; please ensure you've extracted the program fully.");
+        Common.AssertDirExists(BinderKeysGameDir, Loc.Get("Err_BinderKeysDirNotFound"));
     }
 
     public string ReadKey(string bhdPath)
@@ -27,7 +27,7 @@ internal class BinderKeysReader
 
         string bhdName = Path.GetFileNameWithoutExtension(bhdPath);
         string keyPath = Path.Combine(BinderKeysGameDir, "Key", bhdName + ".pem");
-        Common.AssertFileExists(keyPath, "Encryption key not found; please ensure you've extracted the program fully.");
+        Common.AssertFileExists(keyPath, Loc.Get("Err_EncryptionKeyNotFound"));
         return File.ReadAllText(keyPath);
     }
 
@@ -37,7 +37,7 @@ internal class BinderKeysReader
 
         string bhdName = Path.GetFileNameWithoutExtension(bhdPath);
         string dictPath = Path.Combine(BinderKeysGameDir, "Hash", bhdName + ".txt");
-        Common.AssertFileExists(dictPath, "Hash dictionary not found; please ensure you've extracted the program fully.");
+        Common.AssertFileExists(dictPath, Loc.Get("Err_HashDictNotFound"));
         return new HashDict(dictPath, bhdFormat);
     }
 }

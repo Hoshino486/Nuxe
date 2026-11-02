@@ -3,97 +3,98 @@
 --| https://github.com/JKAnderson/Nuxe
 --| By TKGP https://tkgp.neocities.org/
 
-A gamedata unpacker and loose-loading patcher for FromSoftware games; the spiritual successor to UXM.
+FromSoftware 游戏的游戏数据解包器与松散加载修补器；UXM 的精神续作。
+界面默认简体中文，可在主界面“语言”下拉框中切换中英文。
 
-Nuxe supports all FromSoftware games that use large BinderLight archives:
+Nuxe 支持所有使用大型 BinderLight 归档的 FromSoftware 游戏：
 
-- Armored Core V (PS3, X360)
-- Armored Core Verdict Day (PS3, X360)
-- Armored Core VI (PC)
-- Dark Souls (PC, PS3, X360)
-- Dark Souls Remastered (NS)
-- Dark Souls II (PC)
-- Dark Souls II Scholar of the First Sin (PC)
-- Dark Souls III (PC)
-- Elden Ring (PC)
-- Elden Ring Nightreign (PC)
-- Sekiro + Digital Artwork & Mini Soundtrack (PC)
-- Steel Battalion Heavy Armor (X360)
+- 装甲核心 V（PS3、X360）
+- 装甲核心 审判日（PS3、X360）
+- 装甲核心 VI 境界天火（PC）
+- 黑暗之魂（PC、PS3、X360）
+- 黑暗之魂 重制版（NS）
+- 黑暗之魂 II（PC）
+- 黑暗之魂 II 原罪学者（PC）
+- 黑暗之魂 III（PC）
+- 艾尔登法环（PC）
+- 艾尔登法环 黑夜君临（PC）
+- 只狼：影逝二度 + 数字艺术集与迷你原声带（PC）
+- 铁骑 重装甲（X360）
 
-Unpacking is available for all games; exe patching is only available for PC games, at the moment.
+所有游戏均可解包；可执行文件修补目前仅支持 PC 游戏。
 
-If you find this tool useful, you can support me on Ko-fi or Patreon:
+如果你觉得这个工具好用，可以在 Ko-fi 或 Patreon 上支持作者：
 https://ko-fi.com/tkgp
 https://www.patreon.com/c/TKGP
 
 
-Usage (Basic)
--------------
+用法（基础）
+------------
 
-The Basic tab in the main window uses sensible default options for most people and should be very familiar to users of UXM. Before doing anything else, use the Browse button to locate your game's main executable:
-- DARKSOULS.exe, eldenring.exe, etc. for PC games
-- EBOOT.BIN for PS3 games
-- default.xex for X360 games
-- main for NS games
+主窗口的“基础”页使用对大多数人合理的默认选项，UXM 用户会非常熟悉。动手之前，先用“浏览”按钮定位游戏的主可执行文件：
+- PC 游戏：DARKSOULS.exe、eldenring.exe 等
+- PS3 游戏：EBOOT.BIN
+- X360 游戏：default.xex
+- NS 游戏：main
 
-The Unpack button will extract all individual game files from the large archives named dvdbnd.bhd/bdt, Data.bhd/bdt, or similar. Files that already exist will be skipped.
+“解包”按钮会把所有单独的游戏文件从 dvdbnd.bhd/bdt、Data.bhd/bdt 这类大型归档中提取出来。已存在的文件会被跳过。
 
-The Patch button will patch the exe to load those individual files directly, instead of from the archives. Patching only needs to be performed once, not every time you modify files.
+“修补”按钮会修改 exe，让它直接加载这些单独文件，而不是从归档中读取。修补只需执行一次，不是每次改动文件都要重做。
 
-The Restore button will delete all extracted files and restore a backup of the executable if patched. For games that are still being updated, it's recommended to perform a Restore, then verify integrity in Steam and unpack/patch again after an update to ensure you have the latest files.
+“还原”按钮会删除所有已提取的文件，并在打过补丁时还原可执行文件的备份。对于仍在更新的游戏，建议在游戏更新后先执行还原，再在 Steam 中验证文件完整性，然后重新解包/修补，以确保拿到最新文件。
 
-The Abort button will cancel any operation in progress.
-
-
-Usage (Advanced)
-----------------
-
-The Advanced tab exposes additional options for more particular use cases and requires manual specification of which game type to use.
-
-For Unpacking (and Restoring and Decrypting), select the game directory directly; this would be the directory containing the game executable, but it isn't required to actually contain an executable, and missing binders will be skipped instead of producing an error.
-
-For Patching, you can select any file, whether or not it's named correctly or found in a complete game directory.
-
-The Decrypt tab, only available in Advanced mode, will decrypt each binder header (if encrypted) and create a decrypted copy named *-dec.bhd in the same directory.
+“中止”按钮会取消正在进行的操作。
 
 
-Notes for specific games
-------------------------
+用法（高级）
+------------
 
-- Dark Souls: Prepare to Die Edition (PC)
-Nuxe supports unpacking and patching PTDE, but it uses the more direct style of modern games, leaving all files in compressed form.
-This means that it is NOT compatible with mods created for/with UDSFM or UXM Selective, nor with tools that expect the legacy format (which, at least at the moment, will be almost all of them).
-It's up to other authors whether they want to migrate to the modern format, but please don't bug them about it; just keep using UDSFM or UXM Selective if you need to.
+“高级”页暴露面向特殊需求的额外选项，必须手动指定游戏类型。
 
-- Sekiro (PC)
-Sekiro uses SteamDRM, which means that patching the exe will just cause it to crash when started.
-If you need to patch Sekiro, use a tool like Steamless to strip out the SteamDRM first.
+解包（以及还原、解密）时直接选择游戏目录；通常就是包含游戏可执行文件的目录，但并不要求里面真的有可执行文件，缺失的归档会被跳过而不会报错。
 
-- Armored Core VI, Elden Ring, Elden Ring Nightreign (PC)
-For these games, patching mostly works, but doesn't support files in the "sd" folder.
+修补时可以选择任意文件，无论文件名是否正确、是否位于完整的游戏目录中。
+
+“解密”页仅在高级模式中提供，会解密每个归档头（若已加密），并在同目录生成名为 *-dec.bhd 的解密副本。
 
 
-Changelog
----------
+特定游戏说明
+------------
+
+- 黑暗之魂：受死版（PC）
+Nuxe 支持对 PTDE 解包与修补，但采用现代游戏那种更直接的方式，所有文件保持压缩形式。
+这意味着它与为 UDSFM 或 UXM Selective 制作/配套的 MOD 不兼容，也与期待旧格式的工具不兼容（至少目前几乎所有工具都属于后者）。
+其他作者是否迁移到新格式由他们自己决定，请不要为此去骚扰他们；有需要就继续用 UDSFM 或 UXM Selective。
+
+- 只狼：影逝二度（PC）
+只狼使用 SteamDRM，直接修补 exe 会导致启动时崩溃。
+如果确实需要修补只狼，先用 Steamless 之类的工具剥掉 SteamDRM。
+
+- 装甲核心 VI、艾尔登法环、艾尔登法环 黑夜君临（PC）
+这些游戏的修补大体可用，但不支持 "sd" 文件夹中的文件。
+
+
+更新日志
+--------
 
 1.2.1
-- Dictionary update for ER
-- Fixed Advanced Patch not respecting selected game
-- Fixed resources failing to be found if launched from Windows search
+- 艾尔登法环字典更新
+- 修复“高级-修补”不遵循所选游戏的问题
+- 修复从 Windows 搜索启动时找不到资源的问题
 
 1.2.0
-- Support for Dark Souls (X360) Artorias of the Abyss
-- Patching supports DLC files for NR
-- Dictionary update for various older games
-- Mild performance improvement when unpacking
+- 支持黑暗之魂（X360）深渊的亚尔特留斯
+- 修补支持 NR 的 DLC 文件
+- 多个老游戏字典更新
+- 解包时性能略微提升
 
 1.1.1
-- Dictionary update for NR
+- NR 字典更新
 
 1.1.0
-- DLC support for NR
-- Dictionary update for ACV/ACVD
-- Fixed failure when operating on certain older versions of DS2
+- NR 支持 DLC
+- ACV/ACVD 字典更新
+- 修复在部分较老版本 DS2 上操作失败的问题
 
 1.0.1
-- Dictionary update for ACVD and NR
+- ACVD 与 NR 字典更新

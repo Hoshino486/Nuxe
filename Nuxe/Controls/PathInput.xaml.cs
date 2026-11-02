@@ -1,4 +1,4 @@
-﻿using Microsoft.Win32;
+using Microsoft.Win32;
 using System.Diagnostics;
 using System.IO;
 using System.Windows;
@@ -57,7 +57,7 @@ public partial class PathInput : UserControl
                 case PathInputMode.OpenFile: BrowseOpenFile(); break;
                 case PathInputMode.SaveFile: BrowseSaveFile(); break;
                 case PathInputMode.OpenFolder: BrowseOpenFolder(); break;
-                default: throw new InvalidOperationException($"Invalid PathInput Mode={Mode}");
+                default: throw new InvalidOperationException(Loc.Format("Err_InvalidPathInputMode", Mode));
             }
         }
         catch (Exception ex)

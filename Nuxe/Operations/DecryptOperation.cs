@@ -1,4 +1,4 @@
-﻿using Coremats;
+using Coremats;
 using System.IO;
 
 namespace Nuxe;
@@ -11,7 +11,7 @@ internal class DecryptOperation : Operation
 
     public DecryptOperation(string resDir, string gameDir, GameConfig gameConfig)
     {
-        Common.AssertDirExists(gameDir, "Game directory not found; please select a valid directory.");
+        Common.AssertDirExists(gameDir, Loc.Get("Err_GameDirNotFound"));
         GameDir = Path.GetFullPath(gameDir);
 
         string binderKeysDir = Path.Combine(resDir, "BinderKeys");
@@ -21,7 +21,7 @@ internal class DecryptOperation : Operation
 
     protected override void Run()
     {
-        DecryptHeaders("(Step 1/1) Decrypting headers");
+        DecryptHeaders(Loc.Get("Step_Decrypt1"));
     }
 
     private void DecryptHeaders(string step)
@@ -31,7 +31,7 @@ internal class DecryptOperation : Operation
             CancellationToken.ThrowIfCancellationRequested();
             var binderConfig = GameConfig.Binders[i];
             double progress = (double)i / GameConfig.Binders.Count;
-            Progress.Report(new(progress, $"{step} - (Header {i}/{GameConfig.Binders.Count}) {binderConfig.HeaderPath}"));
+            Progress.Report(new(progress, Loc.Format("Progress_Header", step, i, GameConfig.Binders.Count, binderConfig.HeaderPath)));
 
             string bhdPath = Path.Combine(GameDir, binderConfig.HeaderPath);
             if (File.Exists(bhdPath))

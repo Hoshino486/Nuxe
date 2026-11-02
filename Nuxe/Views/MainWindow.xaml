@@ -1,4 +1,4 @@
-﻿<Window x:Class="Nuxe.Views.MainWindow"
+<Window x:Class="Nuxe.Views.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -17,85 +17,93 @@
     
     <StackPanel Margin="6">
         <TabControl Name="TabControlSettings">
-            <TabItem Header="Basic">
+            <TabItem Header="{DynamicResource Tab_Basic}">
                 <StackPanel>
-                    <Label>Game Executable</Label>
-                    <controls:PathInput Mode="OpenFile" Prompt="Select game executable" FileFilter="Executable file|*.exe;eboot.bin;default.xex;main" Path="{Binding GameExe, Mode=TwoWay}"/>
+                    <Grid ColumnDefinitions="*,Auto">
+                        <Label Grid.Column="0" Content="{DynamicResource Label_GameExecutable}"/>
+                        <StackPanel Grid.Column="1" Orientation="Horizontal">
+                            <Label Content="{DynamicResource Label_Language}" VerticalAlignment="Center"/>
+                            <ComboBox Name="ComboBoxLanguage" Width="130" Height="24" Margin="3"
+                                      DisplayMemberPath="DisplayName"
+                                      SelectionChanged="ComboBoxLanguage_SelectionChanged"/>
+                        </StackPanel>
+                    </Grid>
+                    <controls:PathInput Mode="OpenFile" Prompt="{DynamicResource Prompt_SelectGameExe}" FileFilter="{DynamicResource Filter_Executable}" Path="{Binding GameExe, Mode=TwoWay}"/>
                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
-                        <Button Click="ButtonBasicUnpack_Click">Unpack</Button>
-                        <Button Click="ButtonBasicPatch_Click">Patch</Button>
-                        <Button Click="ButtonBasicRestore_Click">Restore</Button>
+                        <Button Click="ButtonBasicUnpack_Click" Content="{DynamicResource Button_Unpack}"/>
+                        <Button Click="ButtonBasicPatch_Click" Content="{DynamicResource Button_Patch}"/>
+                        <Button Click="ButtonBasicRestore_Click" Content="{DynamicResource Button_Restore}"/>
                     </StackPanel>
                 </StackPanel>
             </TabItem>
 
-            <TabItem Header="Advanced">
+            <TabItem Header="{DynamicResource Tab_Advanced}">
                 <TabControl Margin="-3 3 -3 -3">
-                    <TabItem Header="Unpack">
+                    <TabItem Header="{DynamicResource Tab_Unpack}">
                         <StackPanel>
-                            <Label>Game Directory</Label>
-                            <controls:PathInput Mode="OpenFolder" Prompt="Select game directory" Path="{Binding GameDir, Mode=TwoWay}"/>
+                            <Label Content="{DynamicResource Label_GameDirectory}"/>
+                            <controls:PathInput Mode="OpenFolder" Prompt="{DynamicResource Prompt_SelectGameDir}" Path="{Binding GameDir, Mode=TwoWay}"/>
 
-                            <CheckBox IsChecked="{Binding UseUnpackDir}">Unpack to separate directory (disables backup)</CheckBox>
-                            <controls:PathInput IsEnabled="{Binding UseUnpackDir}" Mode="OpenFolder" Prompt="Select unpack directory" Path="{Binding UnpackDir, Mode=TwoWay}"/>
+                            <CheckBox IsChecked="{Binding UseUnpackDir}" Content="{DynamicResource Check_UseUnpackDir}"/>
+                            <controls:PathInput IsEnabled="{Binding UseUnpackDir}" Mode="OpenFolder" Prompt="{DynamicResource Prompt_SelectUnpackDir}" Path="{Binding UnpackDir, Mode=TwoWay}"/>
 
-                            <CheckBox IsChecked="{Binding UseUnpackFilter}">Filter files (Regex)</CheckBox>
+                            <CheckBox IsChecked="{Binding UseUnpackFilter}" Content="{DynamicResource Check_UseUnpackFilter}"/>
                             <TextBox IsEnabled="{Binding UseUnpackFilter}" Text="{Binding UnpackFilter, Mode=TwoWay}"/>
 
                             <StackPanel Orientation="Horizontal">
-                                <CheckBox IsChecked="{Binding UnpackOverwrite}">Overwrite existing files</CheckBox>
+                                <CheckBox IsChecked="{Binding UnpackOverwrite}" Content="{DynamicResource Check_UnpackOverwrite}"/>
                             </StackPanel>
 
                             <StackPanel>
-                                <Label>Game Type</Label>
+                                <Label Content="{DynamicResource Label_GameType}"/>
                                 <Grid ColumnDefinitions="*,Auto">
-                                    <ComboBox Grid.Column="0" ItemsSource="{Binding GameConfigs}" SelectedItem="{Binding ManualGame}"/>
-                                    <Button Grid.Column="1" VerticalAlignment="Bottom" Click="ButtonAdvancedUnpack_Click">Unpack</Button>
+                                    <ComboBox Grid.Column="0" ItemsSource="{Binding GameConfigItems}" DisplayMemberPath="DisplayName" SelectedItem="{Binding ManualGame}"/>
+                                    <Button Grid.Column="1" VerticalAlignment="Bottom" Click="ButtonAdvancedUnpack_Click" Content="{DynamicResource Button_Unpack}"/>
                                 </Grid>
                             </StackPanel>
                         </StackPanel>
                     </TabItem>
-                    <TabItem Header="Patch">
+                    <TabItem Header="{DynamicResource Tab_Patch}">
                         <StackPanel>
-                            <Label>Game Executable</Label>
-                            <controls:PathInput Mode="OpenFile" Prompt="Select executable file" Path="{Binding GameExe, Mode=TwoWay}"/>
+                            <Label Content="{DynamicResource Label_GameExecutable}"/>
+                            <controls:PathInput Mode="OpenFile" Prompt="{DynamicResource Prompt_SelectExeFile}" Path="{Binding GameExe, Mode=TwoWay}"/>
 
-                            <CheckBox IsChecked="{Binding UsePatchOutputPath}">Save to separate file (disables backup)</CheckBox>
-                            <controls:PathInput Mode="SaveFile" Prompt="Save patched file as..." Path="{Binding PatchOutputPath, Mode=TwoWay}"/>
+                            <CheckBox IsChecked="{Binding UsePatchOutputPath}" Content="{DynamicResource Check_PatchOutputPath}"/>
+                            <controls:PathInput Mode="SaveFile" Prompt="{DynamicResource Prompt_PatchOutputSaveAs}" Path="{Binding PatchOutputPath, Mode=TwoWay}"/>
 
                             <StackPanel>
-                                <Label>Game Type</Label>
+                                <Label Content="{DynamicResource Label_GameType}"/>
                                 <Grid ColumnDefinitions="*,Auto">
-                                    <ComboBox Grid.Column="0" ItemsSource="{Binding GameConfigs}" SelectedItem="{Binding ManualGame}"/>
-                                    <Button Grid.Column="1" VerticalAlignment="Bottom" Click="ButtonAdvancedPatch_Click">Patch</Button>
+                                    <ComboBox Grid.Column="0" ItemsSource="{Binding GameConfigItems}" DisplayMemberPath="DisplayName" SelectedItem="{Binding ManualGame}"/>
+                                    <Button Grid.Column="1" VerticalAlignment="Bottom" Click="ButtonAdvancedPatch_Click" Content="{DynamicResource Button_Patch}"/>
                                 </Grid>
                             </StackPanel>
                         </StackPanel>
                     </TabItem>
-                    <TabItem Header="Restore">
+                    <TabItem Header="{DynamicResource Tab_Restore}">
                         <StackPanel>
-                            <Label>Game Directory</Label>
-                            <controls:PathInput Mode="OpenFolder" Prompt="Select game directory"  Path="{Binding GameDir, Mode=TwoWay}"/>
+                            <Label Content="{DynamicResource Label_GameDirectory}"/>
+                            <controls:PathInput Mode="OpenFolder" Prompt="{DynamicResource Prompt_SelectGameDir}"  Path="{Binding GameDir, Mode=TwoWay}"/>
 
                             <StackPanel>
-                                <Label>Game Type</Label>
+                                <Label Content="{DynamicResource Label_GameType}"/>
                                 <Grid ColumnDefinitions="*,Auto">
-                                    <ComboBox Grid.Column="0" ItemsSource="{Binding GameConfigs}" SelectedItem="{Binding ManualGame}"/>
-                                    <Button Grid.Column="1" VerticalAlignment="Bottom" Click="ButtonAdvancedRestore_Click">Restore</Button>
+                                    <ComboBox Grid.Column="0" ItemsSource="{Binding GameConfigItems}" DisplayMemberPath="DisplayName" SelectedItem="{Binding ManualGame}"/>
+                                    <Button Grid.Column="1" VerticalAlignment="Bottom" Click="ButtonAdvancedRestore_Click" Content="{DynamicResource Button_Restore}"/>
                                 </Grid>
                             </StackPanel>
                         </StackPanel>
                     </TabItem>
-                    <TabItem Header="Decrypt">
+                    <TabItem Header="{DynamicResource Tab_Decrypt}">
                         <StackPanel>
-                            <Label>Game Directory</Label>
-                            <controls:PathInput Mode="OpenFolder" Prompt="Select game directory"  Path="{Binding GameDir, Mode=TwoWay}"/>
+                            <Label Content="{DynamicResource Label_GameDirectory}"/>
+                            <controls:PathInput Mode="OpenFolder" Prompt="{DynamicResource Prompt_SelectGameDir}"  Path="{Binding GameDir, Mode=TwoWay}"/>
 
                             <StackPanel>
-                                <Label>Game Type</Label>
+                                <Label Content="{DynamicResource Label_GameType}"/>
                                 <Grid ColumnDefinitions="*,Auto">
-                                    <ComboBox Grid.Column="0" ItemsSource="{Binding GameConfigs}" SelectedItem="{Binding ManualGame}"/>
-                                    <Button Grid.Column="1" VerticalAlignment="Bottom" Click="ButtonAdvancedDecrypt_Click">Decrypt</Button>
+                                    <ComboBox Grid.Column="0" ItemsSource="{Binding GameConfigItems}" DisplayMemberPath="DisplayName" SelectedItem="{Binding ManualGame}"/>
+                                    <Button Grid.Column="1" VerticalAlignment="Bottom" Click="ButtonAdvancedDecrypt_Click" Content="{DynamicResource Button_Decrypt}"/>
                                 </Grid>
                             </StackPanel>
                         </StackPanel>
@@ -104,11 +112,11 @@
             </TabItem>
         </TabControl>
 
-        <GroupBox Header="Status">
+        <GroupBox Header="{DynamicResource Group_Status}">
             <StackPanel>
                 <Grid ColumnDefinitions="*,Auto">
                     <TextBox Name="TextBoxStatus" Grid.Column="0" IsReadOnly="True"/>
-                    <Button Name="ButtonAbort" Grid.Column="1" IsEnabled="False" Click="ButtonAbort_Click">Abort</Button>
+                    <Button Name="ButtonAbort" Grid.Column="1" IsEnabled="False" Click="ButtonAbort_Click" Content="{DynamicResource Button_Abort}"/>
                 </Grid>
                 <ProgressBar Name="ProgressBar" d:Value="50"/>
             </StackPanel>

@@ -1,4 +1,4 @@
-﻿<UserControl x:Class="Nuxe.Controls.PathInput"
+<UserControl x:Class="Nuxe.Controls.PathInput"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
@@ -10,8 +10,8 @@
     <StackPanel DataContext="{Binding RelativeSource={RelativeSource AncestorType=controls:PathInput}}">
         <Grid ColumnDefinitions="*,Auto,Auto">
             <TextBox Grid.Column="0" Text="{Binding Path}"/>
-            <Button Grid.Column="1" Click="ButtonBrowse_Click">Browse</Button>
-            <Button Grid.Column="2" Click="ButtonExplore_Click">Explore</Button>
+            <Button Grid.Column="1" Click="ButtonBrowse_Click" Content="{DynamicResource Button_Browse}"/>
+            <Button Grid.Column="2" Click="ButtonExplore_Click" Content="{DynamicResource Button_Explore}"/>
         </Grid>
     </StackPanel>
     

@@ -1,0 +1,92 @@
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:sys="clr-namespace:System;assembly=System.Runtime">
+
+    <!-- 主窗口 -->
+    <sys:String x:Key="Window_Title">Nuxe {0}</sys:String>
+    <sys:String x:Key="Tab_Basic">基础</sys:String>
+    <sys:String x:Key="Tab_Advanced">高级</sys:String>
+    <sys:String x:Key="Tab_Unpack">解包</sys:String>
+    <sys:String x:Key="Tab_Patch">修补</sys:String>
+    <sys:String x:Key="Tab_Restore">还原</sys:String>
+    <sys:String x:Key="Tab_Decrypt">解密</sys:String>
+
+    <sys:String x:Key="Label_GameExecutable">游戏可执行文件</sys:String>
+    <sys:String x:Key="Label_GameDirectory">游戏目录</sys:String>
+    <sys:String x:Key="Label_GameType">游戏类型</sys:String>
+    <sys:String x:Key="Label_Language">语言</sys:String>
+
+    <sys:String x:Key="Prompt_SelectGameExe">选择游戏可执行文件</sys:String>
+    <sys:String x:Key="Prompt_SelectGameDir">选择游戏目录</sys:String>
+    <sys:String x:Key="Prompt_SelectExeFile">选择可执行文件</sys:String>
+    <sys:String x:Key="Prompt_SelectUnpackDir">选择解包目录</sys:String>
+    <sys:String x:Key="Prompt_PatchOutputSaveAs">将修补后的文件另存为…</sys:String>
+    <sys:String x:Key="Filter_Executable">可执行文件|*.exe;eboot.bin;default.xex;main</sys:String>
+
+    <sys:String x:Key="Button_Unpack">解包</sys:String>
+    <sys:String x:Key="Button_Patch">修补</sys:String>
+    <sys:String x:Key="Button_Restore">还原</sys:String>
+    <sys:String x:Key="Button_Decrypt">解密</sys:String>
+    <sys:String x:Key="Button_Abort">中止</sys:String>
+    <sys:String x:Key="Button_Browse">浏览</sys:String>
+    <sys:String x:Key="Button_Explore">打开目录</sys:String>
+    <sys:String x:Key="Button_OK">确定</sys:String>
+
+    <sys:String x:Key="Check_UseUnpackDir">解包到独立目录（禁用备份）</sys:String>
+    <sys:String x:Key="Check_UseUnpackFilter">筛选文件（正则表达式）</sys:String>
+    <sys:String x:Key="Check_UnpackOverwrite">覆盖已存在的文件</sys:String>
+    <sys:String x:Key="Check_PatchOutputPath">另存为独立文件（禁用备份）</sys:String>
+
+    <sys:String x:Key="Group_Status">状态</sys:String>
+
+    <!-- 操作步骤 -->
+    <sys:String x:Key="Step_Unpack1">（第 1/4 步）正在加载档案头</sys:String>
+    <sys:String x:Key="Step_Unpack2">（第 2/4 步）正在备份文件</sys:String>
+    <sys:String x:Key="Step_Unpack3">（第 3/4 步）正在审计文件</sys:String>
+    <sys:String x:Key="Step_Unpack4">（第 4/4 步）正在解包文件</sys:String>
+    <sys:String x:Key="Step_Patch1">（第 1/1 步）正在修补别名</sys:String>
+    <sys:String x:Key="Step_Restore1">（第 1/2 步）正在删除已解包的文件</sys:String>
+    <sys:String x:Key="Step_Restore2">（第 2/2 步）正在还原备份文件</sys:String>
+    <sys:String x:Key="Step_Decrypt1">（第 1/1 步）正在解密档案头</sys:String>
+
+    <!-- 进度格式 -->
+    <sys:String x:Key="Progress_File">{0} - （文件 {1}/{2}）{3}</sys:String>
+    <sys:String x:Key="Progress_Directory">{0} - （目录 {1}/{2}）{3}</sys:String>
+    <sys:String x:Key="Progress_Alias">{0} - （别名 {1}/{2}）{3}</sys:String>
+    <sys:String x:Key="Progress_Path">{0} - （路径 {1}/{2}）{3}</sys:String>
+    <sys:String x:Key="Progress_Header">{0} - （档案头 {1}/{2}）{3}</sys:String>
+
+    <!-- 操作动词与结果 -->
+    <sys:String x:Key="Verb_Unpack">解包</sys:String>
+    <sys:String x:Key="Verb_Patch">修补</sys:String>
+    <sys:String x:Key="Verb_Restore">还原</sys:String>
+    <sys:String x:Key="Verb_Decrypt">解密</sys:String>
+    <sys:String x:Key="Status_Completed">{0}完成，用时 {1}！</sys:String>
+    <sys:String x:Key="Status_Aborted">{0}已中止。</sys:String>
+    <sys:String x:Key="Status_Failed">{0}失败。</sys:String>
+    <sys:String x:Key="Elapsed_Format">mm分ss秒</sys:String>
+
+    <!-- 错误信息 -->
+    <sys:String x:Key="Err_Unexpected">发生了意外错误。</sys:String>
+    <sys:String x:Key="Err_PathSuffix">&#x0a;路径："{0}"</sys:String>
+    <sys:String x:Key="Err_GameDirNotFound">找不到游戏目录，请选择一个有效的目录。</sys:String>
+    <sys:String x:Key="Err_HeaderFileNotFound">找不到档案头文件；若为 Steam 游戏，请先验证文件完整性。</sys:String>
+    <sys:String x:Key="Err_DataFileNotFound">找不到数据文件；若为 Steam 游戏，请先验证文件完整性。</sys:String>
+    <sys:String x:Key="Err_NotEnoughSpace">磁盘空间不足，无法解包文件；需要 {0:F2} GB，可用 {1:F2} GB。</sys:String>
+    <sys:String x:Key="Err_PatchUnsupported">该游戏不支持修补可执行文件。</sys:String>
+    <sys:String x:Key="Err_ExeNotFound">找不到可执行文件，请选择一个有效的文件。</sys:String>
+    <sys:String x:Key="Err_NoAliases">没有找到需要修补的别名；文件可能已经修补过，或者选错了文件。</sys:String>
+    <sys:String x:Key="Err_ManualGameRequired">高级模式下必须手动选择游戏类型。</sys:String>
+    <sys:String x:Key="Err_GameConfigsDirNotFound">找不到游戏配置目录；请确认程序文件已完整解压。</sys:String>
+    <sys:String x:Key="Err_DetectGameFailed">无法识别游戏类型；请确认已选择正确的游戏目录。</sys:String>
+    <sys:String x:Key="Err_BinderKeysDirNotFound">找不到 BinderKeys 游戏目录；请确认程序已完整解压。</sys:String>
+    <sys:String x:Key="Err_EncryptionKeyNotFound">找不到加密密钥；请确认程序已完整解压。</sys:String>
+    <sys:String x:Key="Err_EncryptionKeyNotFoundSteam">找不到加密密钥；若为 Steam 游戏，请先验证文件完整性。</sys:String>
+    <sys:String x:Key="Err_HashDictNotFound">找不到哈希字典；请确认程序已完整解压。</sys:String>
+    <sys:String x:Key="Err_InvalidPathInputMode">无效的 PathInput 模式：{0}</sys:String>
+
+    <!-- 语言名称 -->
+    <sys:String x:Key="Language_zh">简体中文</sys:String>
+    <sys:String x:Key="Language_en">English</sys:String>
+
+</ResourceDictionary>

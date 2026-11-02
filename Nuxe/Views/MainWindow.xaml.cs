@@ -1,4 +1,4 @@
-﻿using Nuxe.ViewModels;
+using Nuxe.ViewModels;
 using System.Diagnostics;
 using System.IO;
 using System.Media;
@@ -14,6 +14,7 @@ public partial class MainWindow : Window
     private CancellationTokenSource OperationCancellation { get; set; }
     private OperationProgress LastProgress { get; set; }
     private DispatcherTimer ProgressTimer { get; }
+    private bool LanguageReady { get; set; }
 
     public MainWindow()
     {
@@ -30,6 +31,48 @@ public partial class MainWindow : Window
             TaskbarItemInfo.ProgressValue = progress.Value;
         };
         ProgressTimer.Start();
+
+        ComboBoxLanguage.ItemsSource = new[]
+        {
+            new LanguageOption(Loc.Chinese),
+            new LanguageOption(Loc.English),
+        };
+        ComboBoxLanguage.SelectedItem = null;
+        ComboBoxLanguage.ItemsSource = new[]
+        {
+            new LanguageOption(Loc.Chinese),
+            new LanguageOption(Loc.English),
+        };
+        ComboBoxLanguage.SelectedItem = ((IEnumerable<LanguageOption>)ComboBoxLanguage.ItemsSource).First(option => option.Code == Loc.Current);
+        LanguageReady = true;
+    }
+
+    internal void SelectLanguage(string code)
+    {
+        string normalized = Loc.Normalize(code);
+        if (normalized == Loc.Current)
+            return;
+
+        Loc.SetLanguage(normalized);
+        Loc.PersistLanguage();
+
+        LanguageReady = false;
+        var options = new[]
+        {
+            new LanguageOption(Loc.Chinese),
+            new LanguageOption(Loc.English),
+        };
+        ComboBoxLanguage.ItemsSource = options;
+        ComboBoxLanguage.SelectedItem = options.First(option => option.Code == Loc.Current);
+        LanguageReady = true;
+    }
+
+    private void ComboBoxLanguage_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
+    {
+        if (!LanguageReady || ComboBoxLanguage.SelectedItem is not LanguageOption option)
+            return;
+
+        SelectLanguage(option.Code);
     }
 
     private void Window_Loaded(object sender, RoutedEventArgs e)
@@ -60,7 +103,7 @@ public partial class MainWindow : Window
 
     private async void ButtonBasicUnpack_Click(object sender, RoutedEventArgs e)
     {
-        await RunOperation("Unpacking", () =>
+        await RunOperation("Verb_Unpack", () =>
         {
             string gameDir = Path.GetDirectoryName(State.GameExe);
             var gameConfig = GameConfig.DetectGameConfig(State.GameConfigs, gameDir);
@@ -70,20 +113,20 @@ public partial class MainWindow : Window
 
     private async void ButtonAdvancedUnpack_Click(object sender, RoutedEventArgs e)
     {
-        await RunOperation("Unpacking", () =>
+        await RunOperation("Verb_Unpack", () =>
         {
-            if (State.ManualGame == null)
-                throw new FriendlyException("Game type must be selected manually in advanced mode.");
+            if (State.SelectedGameConfig == null)
+                throw new FriendlyException(Loc.Get("Err_ManualGameRequired"));
 
             string unpackDir = State.UseUnpackDir ? State.UnpackDir : null;
             string unpackFilter = State.UseUnpackFilter ? State.UnpackFilter : null;
-            return new UnpackOperation(State.ResDir, State.GameDir, State.ManualGame, unpackDir, unpackFilter, State.UnpackOverwrite, true);
+            return new UnpackOperation(State.ResDir, State.GameDir, State.SelectedGameConfig, unpackDir, unpackFilter, State.UnpackOverwrite, true);
         });
     }
 
     private async void ButtonBasicPatch_Click(object sender, RoutedEventArgs e)
     {
-        await RunOperation("Patching", () =>
+        await RunOperation("Verb_Patch", () =>
         {
             string gameDir = Path.GetDirectoryName(State.GameExe);
             var gameConfig = GameConfig.DetectGameConfig(State.GameConfigs, gameDir);
@@ -93,19 +136,19 @@ public partial class MainWindow : Window
 
     private async void ButtonAdvancedPatch_Click(object sender, RoutedEventArgs e)
     {
-        await RunOperation("Patching", () =>
+        await RunOperation("Verb_Patch", () =>
         {
-            if (State.ManualGame == null)
-                throw new FriendlyException("Game type must be selected manually in advanced mode.");
+            if (State.SelectedGameConfig == null)
+                throw new FriendlyException(Loc.Get("Err_ManualGameRequired"));
 
             string outputPath = State.UsePatchOutputPath ? State.PatchOutputPath : null;
-            return new PatchOperation(State.GameExe, State.ManualGame, outputPath);
+            return new PatchOperation(State.GameExe, State.SelectedGameConfig, outputPath);
         });
     }
 
     private async void ButtonBasicRestore_Click(object sender, RoutedEventArgs e)
     {
-        await RunOperation("Restoration", () =>
+        await RunOperation("Verb_Restore", () =>
         {
             string gameDir = Path.GetDirectoryName(State.GameExe);
             var gameConfig = GameConfig.DetectGameConfig(State.GameConfigs, gameDir);
@@ -115,27 +158,27 @@ public partial class MainWindow : Window
 
     private async void ButtonAdvancedRestore_Click(object sender, RoutedEventArgs e)
     {
-        await RunOperation("Restoration", () =>
+        await RunOperation("Verb_Restore", () =>
         {
-            if (State.ManualGame == null)
-                throw new FriendlyException("Game type must be selected manually in advanced mode.");
+            if (State.SelectedGameConfig == null)
+                throw new FriendlyException(Loc.Get("Err_ManualGameRequired"));
 
-            return new RestoreOperation(State.GameDir, State.ManualGame);
+            return new RestoreOperation(State.GameDir, State.SelectedGameConfig);
         });
     }
 
     private async void ButtonAdvancedDecrypt_Click(object sender, RoutedEventArgs e)
     {
-        await RunOperation("Decrypt", () =>
+        await RunOperation("Verb_Decrypt", () =>
         {
-            if (State.ManualGame == null)
-                throw new FriendlyException("Game type must be selected manually in advanced mode.");
+            if (State.SelectedGameConfig == null)
+                throw new FriendlyException(Loc.Get("Err_ManualGameRequired"));
 
-            return new DecryptOperation(State.ResDir, State.GameDir, State.ManualGame);
+            return new DecryptOperation(State.ResDir, State.GameDir, State.SelectedGameConfig);
         });
     }
 
-    private async Task RunOperation(string operationVerb, Func<Operation> createOperation)
+    private async Task RunOperation(string verbKey, Func<Operation> createOperation)
     {
         // Keep this up here so it doesn't dispose before the Abort button is disabled
         using var ctSource = new CancellationTokenSource();
@@ -152,16 +195,16 @@ public partial class MainWindow : Window
 
             sw.Stop();
             var elapsed = sw.Elapsed + TimeSpan.FromSeconds(1); // :3c
-            OperationProgress.Report(new(1, $"{operationVerb} completed in {elapsed:mm\\mss\\s}!"));
+            OperationProgress.Report(new(1, Loc.Format("Status_Completed", Loc.Get(verbKey), Loc.Elapsed(elapsed))));
             SystemSounds.Beep.Play();
         }
         catch (OperationCanceledException)
         {
-            OperationProgress.Report(new(0, $"{operationVerb} aborted."));
+            OperationProgress.Report(new(0, Loc.Format("Status_Aborted", Loc.Get(verbKey))));
         }
         catch (Exception ex)
         {
-            OperationProgress.Report(new(0, $"{operationVerb} failed."));
+            OperationProgress.Report(new(0, Loc.Format("Status_Failed", Loc.Get(verbKey))));
             Common.DisplayError(ex);
         }
         TabControlSettings.IsEnabled = true;

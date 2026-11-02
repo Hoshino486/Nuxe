@@ -1,4 +1,4 @@
-﻿using Coremats;
+using Coremats;
 using System.IO;
 using System.Security.Cryptography;
 using System.Text.RegularExpressions;
@@ -17,7 +17,7 @@ internal class UnpackOperation : Operation
 
     public UnpackOperation(string resDir, string gameDir, GameConfig gameConfig, string unpackDir, string unpackFilter, bool unpackOverwrite, bool allowMissingBinders)
     {
-        Common.AssertDirExists(gameDir, "Game directory not found; please select a valid directory.");
+        Common.AssertDirExists(gameDir, Loc.Get("Err_GameDirNotFound"));
         GameDir = Path.GetFullPath(gameDir);
         UnpackDir = unpackDir == null ? GameDir : Path.GetFullPath(unpackDir);
 
@@ -31,10 +31,10 @@ internal class UnpackOperation : Operation
 
     protected override void Run()
     {
-        var binders = ReadBinders("(Step 1/4) Loading headers");
-        BackupDirs("(Step 2/4) Backing up files");
-        var files = AuditFiles("(Step 3/4) Auditing files", binders);
-        UnpackFiles("(Step 4/4) Unpacking files", binders, files);
+        var binders = ReadBinders(Loc.Get("Step_Unpack1"));
+        BackupDirs(Loc.Get("Step_Unpack2"));
+        var files = AuditFiles(Loc.Get("Step_Unpack3"), binders);
+        UnpackFiles(Loc.Get("Step_Unpack4"), binders, files);
     }
 
     private List<BinderLight> ReadBinders(string step)
@@ -45,11 +45,11 @@ internal class UnpackOperation : Operation
             CancellationToken.ThrowIfCancellationRequested();
             var binderConfig = GameConfig.Binders[i];
             double progress = (double)i / GameConfig.Binders.Count;
-            Progress.Report(new(progress, $"{step} - (File {i}/{GameConfig.Binders.Count}) {binderConfig.HeaderPath}"));
+            Progress.Report(new(progress, Loc.Format("Progress_File", step, i, GameConfig.Binders.Count, binderConfig.HeaderPath)));
 
             string bhdPath = Path.Combine(GameDir, binderConfig.HeaderPath);
             if (!AllowMissingBinders && !binderConfig.Optional)
-                Common.AssertFileExists(bhdPath, "Header file not found; please verify integrity for Steam games.");
+                Common.AssertFileExists(bhdPath, Loc.Get("Err_HeaderFileNotFound"));
             if (File.Exists(bhdPath))
                 binders.Add(new(BinderKeys, GameDir, GameConfig, binderConfig));
         }
@@ -67,7 +67,7 @@ internal class UnpackOperation : Operation
             CancellationToken.ThrowIfCancellationRequested();
             string backupDir = backupDirs[i];
             double progress = (double)i / backupDirs.Length;
-            Progress.Report(new(progress, $"{step} - (Directory {i}/{backupDirs.Length}) {backupDir}"));
+            Progress.Report(new(progress, Loc.Format("Progress_Directory", step, i, backupDirs.Length, backupDir)));
 
             string backupSource = Path.Combine(GameDir, backupDir);
             string backupTarget = Path.Combine(GameDir, "_backup", backupDir);
@@ -85,7 +85,7 @@ internal class UnpackOperation : Operation
             CancellationToken.ThrowIfCancellationRequested();
             BinderLight binder = binders[i];
             double progress = (double)i / binders.Count;
-            Progress.Report(new(progress, $"{step} - (File {i}/{binders.Count}) {binder.Config.HeaderPath}"));
+            Progress.Report(new(progress, Loc.Format("Progress_File", step, i, binders.Count, binder.Config.HeaderPath)));
 
             string binderName = Path.GetFileNameWithoutExtension(binder.Config.HeaderPath);
             string unpackDir = binder.Config.UnpackDir ?? Path.GetDirectoryName(binder.Config.HeaderPath);
@@ -145,7 +145,7 @@ internal class UnpackOperation : Operation
         {
             double requiredGb = requiredSpaceGuesstimate / GB;
             double availableGb = (double)availableSpace / GB;
-            throw new FriendlyException($"Not enough disk space to unpack files; {requiredGb:F2} GB required, {availableGb:F2} GB available.");
+            throw new FriendlyException(Loc.Format("Err_NotEnoughSpace", requiredGb, availableGb));
         }
     }
 
@@ -160,7 +160,7 @@ internal class UnpackOperation : Operation
             foreach (var binder in binders)
             {
                 string bdtPath = Path.Combine(GameDir, binder.Config.DataPath);
-                Common.AssertFileExists(bdtPath, "Data file not found; please verify integrity for Steam games.");
+                Common.AssertFileExists(bdtPath, Loc.Get("Err_DataFileNotFound"));
                 bdtStreams[binder.Config.DataPath] = File.OpenRead(bdtPath);
             }
 
@@ -171,7 +171,7 @@ internal class UnpackOperation : Operation
                 CancellationToken.ThrowIfCancellationRequested();
                 BinderFile file = files[i];
                 double progress = (double)i / files.Count;
-                Progress.Report(new(progress, $"{step} - (File {i}/{files.Count}) {file.GamePath}"));
+                Progress.Report(new(progress, Loc.Format("Progress_File", step, i, files.Count, file.GamePath)));
 
                 var span = ReadFile(file, bdtStreams, buffer);
                 string unpackDir = Path.GetDirectoryName(file.UnpackPath);

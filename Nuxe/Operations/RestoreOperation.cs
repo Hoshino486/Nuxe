@@ -1,4 +1,4 @@
-﻿using System.IO;
+using System.IO;
 
 namespace Nuxe;
 
@@ -9,15 +9,15 @@ internal class RestoreOperation : Operation
 
     public RestoreOperation(string gameDir, GameConfig gameConfig)
     {
-        Common.AssertDirExists(gameDir, "Game directory not found; please select a valid directory.");
+        Common.AssertDirExists(gameDir, Loc.Get("Err_GameDirNotFound"));
         GameDir = Path.GetFullPath(gameDir);
         GameConfig = gameConfig;
     }
 
     protected override void Run()
     {
-        DeletePaths("(Step 1/2) Deleting unpacked files");
-        RestoreFiles("(Step 2/2) Restoring backup files");
+        DeletePaths(Loc.Get("Step_Restore1"));
+        RestoreFiles(Loc.Get("Step_Restore2"));
     }
 
     private void DeletePaths(string step)
@@ -28,7 +28,7 @@ internal class RestoreOperation : Operation
             CancellationToken.ThrowIfCancellationRequested();
             string deletePath = deletePaths[i];
             double progress = (double)i / deletePaths.Length;
-            Progress.Report(new(progress, $"{step} - (Path {i}/{deletePaths.Length}) {deletePath}"));
+            Progress.Report(new(progress, Loc.Format("Progress_Path", step, i, deletePaths.Length, deletePath)));
 
             deletePath = Path.Combine(GameDir, deletePath);
             if (File.Exists(deletePath))
@@ -53,7 +53,7 @@ internal class RestoreOperation : Operation
             CancellationToken.ThrowIfCancellationRequested();
             string source = dirs[i];
             double progress = (double)i / totalPaths;
-            Progress.Report(new(progress, $"{step} - (Path {i}/{totalPaths}) {source[backupDir.Length..]}"));
+            Progress.Report(new(progress, Loc.Format("Progress_Path", step, i, totalPaths, source[backupDir.Length..])));
 
             string target = Path.Combine(GameDir, source[(backupDir.Length + 1)..]);
             if (Directory.Exists(target))
@@ -66,7 +66,7 @@ internal class RestoreOperation : Operation
             CancellationToken.ThrowIfCancellationRequested();
             string source = files[i];
             double progress = (double)(i + dirs.Length) / totalPaths;
-            Progress.Report(new(progress, $"{step} - (Path {i + dirs.Length}/{totalPaths}) {source[backupDir.Length..]}"));
+            Progress.Report(new(progress, Loc.Format("Progress_Path", step, i + dirs.Length, totalPaths, source[backupDir.Length..])));
 
             string target = Path.Combine(GameDir, source[(backupDir.Length + 1)..]);
             if (File.Exists(target))
