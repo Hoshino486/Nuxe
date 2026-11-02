@@ -64,7 +64,9 @@
     <sys:String x:Key="Status_Completed">{0} completed in {1}!</sys:String>
     <sys:String x:Key="Status_Aborted">{0} aborted.</sys:String>
     <sys:String x:Key="Status_Failed">{0} failed.</sys:String>
-    <sys:String x:Key="Elapsed_Format">mm\mss\s</sys:String>
+    <sys:String x:Key="Time_Hour">h</sys:String>
+    <sys:String x:Key="Time_Minute">m</sys:String>
+    <sys:String x:Key="Time_Second">s</sys:String>
 
     <!-- Error messages -->
     <sys:String x:Key="Err_Unexpected">An unexpected error occurred.</sys:String>

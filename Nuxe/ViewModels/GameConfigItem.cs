@@ -11,6 +11,9 @@ internal partial class GameConfigItem : ObservableObject
 
     public string DisplayName => Loc.GameName(Config.Name);
 
+    /// <summary>Read by WPF automation/UI tooling and screen readers.</summary>
+    public override string ToString() => DisplayName;
+
     public GameConfigItem(GameConfig config)
     {
         Config = config;

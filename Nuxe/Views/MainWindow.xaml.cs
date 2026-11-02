@@ -195,7 +195,18 @@ public partial class MainWindow : Window
 
             sw.Stop();
             var elapsed = sw.Elapsed + TimeSpan.FromSeconds(1); // :3c
-            OperationProgress.Report(new(1, Loc.Format("Status_Completed", Loc.Get(verbKey), Loc.Elapsed(elapsed))));
+            string verb = Loc.Get(verbKey);
+            // Building the completion text must never turn a finished operation into a failure.
+            string message;
+            try
+            {
+                message = Loc.Format("Status_Completed", verb, Loc.Elapsed(elapsed));
+            }
+            catch (Exception)
+            {
+                message = $"{verb} {Loc.Elapsed(elapsed)}";
+            }
+            OperationProgress.Report(new(1, message));
             SystemSounds.Beep.Play();
         }
         catch (OperationCanceledException)

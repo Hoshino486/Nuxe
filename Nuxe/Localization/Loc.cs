@@ -152,8 +152,35 @@ internal static class Loc
         }
     }
 
-    /// <summary>Formats a TimeSpan using the format pattern stored for the active language.</summary>
-    public static string Elapsed(TimeSpan elapsed) => elapsed.ToString(Get("Elapsed_Format"), CultureInfo.CurrentCulture);
+    /// <summary>
+    /// Renders an elapsed duration without relying on TimeSpan format strings.
+    /// TimeSpan custom formats require every literal character to be escaped, which is
+    /// easy to break in translated resources, so the units are assembled by hand.
+    /// </summary>
+    public static string Elapsed(TimeSpan elapsed)
+    {
+        if (elapsed < TimeSpan.Zero)
+            elapsed = TimeSpan.Zero;
+
+        long totalSeconds = (long)elapsed.TotalSeconds;
+        long hours = totalSeconds / 3600;
+        long minutes = totalSeconds % 3600 / 60;
+        long seconds = totalSeconds % 60;
+
+        string hourUnit = Get("Time_Hour");
+        string minuteUnit = Get("Time_Minute");
+        string secondUnit = Get("Time_Second");
+
+        var builder = new System.Text.StringBuilder();
+        if (hours > 0)
+            builder.Append(hours).Append(hourUnit).Append(minutes).Append(minuteUnit).Append(seconds).Append(secondUnit);
+        else if (minutes > 0)
+            builder.Append(minutes).Append(minuteUnit).Append(seconds).Append(secondUnit);
+        else
+            builder.Append(seconds).Append(secondUnit);
+
+        return builder.ToString();
+    }
 
     public static string LanguageName(string language) =>
         Get(Normalize(language) == English ? "Language_en" : "Language_zh");

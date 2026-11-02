@@ -11,12 +11,29 @@ internal static class Common
     public static void DisplayError(Exception ex)
     {
         SystemSounds.Hand.Play();
+        WriteErrorLog(ex);
+
         ErrorViewModel vm;
         if (ex is FriendlyException)
             vm = new(ex.Message, ex.InnerException?.ToString());
         else
             vm = new(Loc.Get("Err_Unexpected"), ex.ToString());
         new ErrorWindow() { DataContext = vm }.ShowDialog();
+    }
+
+    /// <summary>Appends the error to error.log next to the executable so failures stay diagnosable.</summary>
+    private static void WriteErrorLog(Exception ex)
+    {
+        try
+        {
+            string logPath = Path.Combine(AppContext.BaseDirectory, "error.log");
+            string text = $"[{DateTime.Now:yyyy-MM-dd HH:mm:ss}] {ex}{Environment.NewLine}{Environment.NewLine}";
+            File.AppendAllText(logPath, text);
+        }
+        catch
+        {
+            // Logging must never mask the original failure.
+        }
     }
 
     public static void AssertDirExists(string dir, string message)
